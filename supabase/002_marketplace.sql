@@ -151,6 +151,50 @@ drop trigger if exists messages_bump_conversation on public.messages;
 create trigger messages_bump_conversation after insert on public.messages
 for each row execute function public.bump_conversation_timestamp();
 
+
+-- Create a public-read photo bucket; uploads are restricted to each authenticated user's folder.
+insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
+values('listing-photos','listing-photos',true,5242880,array['image/jpeg','image/png','image/webp'])
+on conflict(id) do nothing;
+
+create policy "Public can view listing photos" on storage.objects
+ for select using (bucket_id='listing-photos');
+create policy "Users upload photos into own folder" on storage.objects
+ for insert to authenticated with check (
+   bucket_id='listing-photos' and (storage.foldername(name))[1]=auth.uid()::text
+);
+create policy "Users update own listing photos" on storage.objects
+ for update to authenticated using (
+   bucket_id='listing-photos' and (storage.foldername(name))[1]=auth.uid()::text
+) with check (
+   bucket_id='listing-photos' and (storage.foldername(name))[1]=auth.uid()::text
+);
+create policy "Users delete own listing photos" on storage.objects
+ for delete to authenticated using (
+   bucket_id='listing-photos' and (storage.foldername(name))[1]=auth.uid()::text
+);
+
+-- Create a basic profile when an auth user signs up.
+create or replace function public.handle_new_auth_user()
+returns trigger language plpgsql security definer set search_path=''
+as $
+begin
+ insert into public.profiles(id,display_name)
+ values(new.id,coalesce(nullif(new.raw_user_meta_data->>'display_name',''),split_part(coalesce(new.email,'member'),'@',1)))
+ on conflict(id) do nothing;
+ return new;
+end;
+$;
+drop trigger if exists on_auth_user_created_bechde on auth.users;
+create trigger on_auth_user_created_bechde after insert on auth.users
+for each row execute function public.handle_new_auth_user();
+
+-- Expose only a seller's public display name, never phone/email.
+create or replace view public.public_seller_profiles with (security_invoker=false) as
+select id,display_name,city,created_at from public.profiles;
+grant select on public.public_seller_profiles to anon, authenticated;
+
+
 -- IMPORTANT: promotion_orders INSERT creates only a pending order.
 -- A trusted server/payment webhook must verify provider signatures and payment status.
 -- Never let browser clients mark orders paid or directly set is_promoted.
