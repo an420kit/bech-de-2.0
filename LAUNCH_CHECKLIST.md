@@ -17,9 +17,9 @@ This repository is currently a front-end prototype. Do not advertise it as fully
 - Notifications: verified email/SMS provider, rate limits and unsubscribe controls.
 
 ## Setup sequence
-1. Create a new Supabase project and run `supabase/schema.sql` in the SQL editor after a developer/security review.
-2. Create a private `listing-photos` storage bucket and implement storage policies that allow authenticated sellers to upload only their own listing photos; validate file size/type and strip unsafe metadata.
-3. Connect the site to Supabase using only the project URL and publishable/anon key. Never put a service-role key in frontend code.
+1. The project URL and publishable key are configured in `assets/config.js` for project `osalvxajhkgisxisntww`. Never put an `sb_secret_...` or `service_role` key in frontend code.
+2. Review and run `supabase/schema.sql`, then `supabase/002_marketplace.sql`, in the Supabase SQL Editor. Do not assume they have been applied just because the frontend key is configured.
+3. The migration creates a public-read `listing-photos` bucket with per-user-folder upload rules. Confirm the bucket and policies exist after applying SQL; validate uploads from a signed-in test account.
 4. Implement signup/login, verified phone/email, profile recovery, create/edit/delete listings, image upload and real listing retrieval.
 5. Implement offers with seller-only accept/decline actions and buyer/seller notifications. Enforce permissions and valid status transitions on the server.
 6. Implement bidding via the `place_bid` database function, with server-side auction opening/closing, clear increment rules, close notifications, reserve rules, anti-sniping policy, abuse protection and audit history. The browser must not be the authority for bid state.
@@ -29,7 +29,7 @@ This repository is currently a front-end prototype. Do not advertise it as fully
 10. Test mobile, accessibility, search/filter, upload abuse, auth/session security, RLS policies, auction concurrency, payment webhook replay, backups and recovery. Then deploy to HTTPS and run smoke tests.
 
 ## Current gaps
-The seller page only previews data locally. Product offers and sample bidding are local demos; no actual messages/bids are sent or saved. The homepage cards are sample data. Login, chat/call, image storage, persistent listings, paid promotions, ad serving, moderation records and admin authentication are not connected. GitHub Pages can host the static preview but cannot replace the secure backend.
+The public Supabase credentials are now configured, but backend readiness has not yet been verified. The site still depends on the SQL migrations, Auth redirect/provider settings, correct RLS/storage policies and multi-account smoke tests. Phone/call reveal, paid promotion checkout/payment verification and ad serving are not implemented. GitHub Pages can host the static preview but cannot replace the secure backend.
 
 ## Auction safety notes
 A production auction needs a reviewed policy for minimum increments, ties, cancelled/removed listings, seller cancellation, reserve price, bidder privacy, collusion, last-second bidding, time zones, failed notifications and dispute handling. The included schema is a starting point, not a complete audited marketplace backend.
