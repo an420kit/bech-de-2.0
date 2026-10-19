@@ -1,11 +1,12 @@
-// Public browser configuration only. Replace these with your Supabase project values.
-// Never put a Supabase service_role key or payment secret here.
+// Public browser configuration only.
+// Safe values: Supabase project URL + publishable key (sb_publishable_...) or legacy anon key.
+// NEVER place sb_secret_... or service_role keys in browser code.
 window.BECHDE_CONFIG = {
-  supabaseUrl: "https://YOUR_PROJECT_REF.supabase.co",
-  supabaseAnonKey: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"
+  supabaseUrl: "https://osalvxajhkgisxisntww.supabase.co",
+  supabaseAnonKey: "sb_publishable_knqp6Rwhz6ELshSEI_Q_oQ_vG4CFcXA"
 };
 window.BECHDE_BACKEND_ENABLED =
   !!window.BECHDE_CONFIG.supabaseUrl &&
-  !window.BECHDE_CONFIG.supabaseUrl.includes("YOUR_PROJECT_REF") &&
+  window.BECHDE_CONFIG.supabaseUrl.startsWith("https://") &&
   !!window.BECHDE_CONFIG.supabaseAnonKey &&
-  !window.BECHDE_CONFIG.supabaseAnonKey.includes("YOUR_SUPABASE");
+  !window.BECHDE_CONFIG.supabaseAnonKey.startsWith("sb_secret_");
