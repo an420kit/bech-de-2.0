@@ -1,5 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
-const cfg=window.BECHDE_CONFIG,ready=window.BECHDE_BACKEND_ENABLED,db=ready?createClient(cfg.supabaseUrl,cfg.supabaseAnonKey):null;
+const cfg=window.BECHDE_CONFIG,ready=window.BECHDE_BACKEND_ENABLED,db=ready?createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}}):null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function banner(text){let e=document.getElementById('adminNotice');if(!e){e=document.createElement('div');e.id='adminNotice';e.className='panel';document.querySelector('main')?.prepend(e)}e.textContent=text}
 async function init(){
