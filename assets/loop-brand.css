@@ -34,3 +34,8 @@ a.brand,a.logo{
 .brand{font-size:29px;line-height:1;letter-spacing:-1.3px}
 .logo{font-size:27px;line-height:1;letter-spacing:-1.1px}
 @media(max-width:520px){a.brand .loopmark,a.logo .loopmark{width:31px!important;height:31px!important;min-width:31px;flex-basis:31px!important}a.brand{font-size:25px}}
+
+/* Keep the vector wordmark legible on both light and dark page headers. */
+.header .brand{color:#fff!important}
+.loop-home .header .brand{color:#171717!important}
+.loop-auth header .brand{color:#fff!important}
