@@ -150,6 +150,36 @@ grant execute on function public.place_bid(uuid,bigint) to authenticated;
 create policy "Users can report listings" on public.listing_reports for insert to authenticated with check (reporter_id=auth.uid());
 create policy "Reporter can view own reports" on public.listing_reports for select to authenticated using (reporter_id=auth.uid());
 
+
+-- Seller response is performed server-side so a buyer cannot accept their own offer.
+create or replace function public.respond_to_offer(p_offer_id uuid, p_decision text)
+returns public.price_offers
+language plpgsql
+security definer
+set search_path = ''
+as $
+declare
+  v_user uuid := auth.uid();
+  v_offer public.price_offers%rowtype;
+  v_seller uuid;
+begin
+  if v_user is null then raise exception 'Sign in to respond to offers'; end if;
+  if p_decision not in ('accepted','declined') then raise exception 'Decision must be accepted or declined'; end if;
+  select o.* into v_offer
+  from public.price_offers o
+  join public.listings l on l.id=o.listing_id
+  where o.id=p_offer_id and l.seller_id=v_user
+  for update of o;
+  if not found then raise exception 'Offer not found for this seller'; end if;
+  if v_offer.status <> 'pending' then raise exception 'This offer is no longer pending'; end if;
+  update public.price_offers set status=p_decision, updated_at=now()
+  where id=p_offer_id returning * into v_offer;
+  return v_offer;
+end;
+$;
+revoke all on function public.respond_to_offer(uuid,text) from public;
+grant execute on function public.respond_to_offer(uuid,text) to authenticated;
+
 -- Important: never expose service_role keys in browser code. Configure storage bucket
 -- policies for listing-photos, email/SMS verification, rate limiting, admin-only
 -- report review, bid notifications, auction close jobs and payment webhooks separately.
