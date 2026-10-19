@@ -218,6 +218,41 @@ create policy "Admins can moderate listings" on public.listings
  for update to authenticated using (public.is_bechde_admin()) with check (public.is_bechde_admin());
 
 
+
+-- Prevent client-side privilege escalation through owner-editable rows.
+create or replace function public.guard_profile_privileged_fields()
+returns trigger language plpgsql set search_path=''
+as $
+begin
+ if new.id <> old.id then raise exception 'Profile ID cannot change'; end if;
+ if new.phone_verified is distinct from old.phone_verified then
+   raise exception 'Phone verification can only be changed by a trusted verification process';
+ end if;
+ return new;
+end;
+$;
+drop trigger if exists profiles_guard_privileged_fields on public.profiles;
+create trigger profiles_guard_privileged_fields before update on public.profiles
+for each row execute function public.guard_profile_privileged_fields();
+
+create or replace function public.guard_listing_privileged_fields()
+returns trigger language plpgsql set search_path=''
+as $
+begin
+ if auth.uid() is not null and old.seller_id=auth.uid() and not public.is_bechde_admin() then
+   if new.seller_id is distinct from old.seller_id then raise exception 'Listing owner cannot change'; end if;
+   if new.is_promoted is distinct from old.is_promoted or new.promoted_until is distinct from old.promoted_until then
+     raise exception 'Promotion status can only be changed by verified payment processing';
+   end if;
+ end if;
+ return new;
+end;
+$;
+drop trigger if exists listings_guard_privileged_fields on public.listings;
+create trigger listings_guard_privileged_fields before update on public.listings
+for each row execute function public.guard_listing_privileged_fields();
+
+
 -- IMPORTANT: promotion_orders INSERT creates only a pending order.
 -- A trusted server/payment webhook must verify provider signatures and payment status.
 -- Never let browser clients mark orders paid or directly set is_promoted.
