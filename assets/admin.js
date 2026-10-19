@@ -19,7 +19,7 @@ async function loadListings(){
   if(r.status!=='paused'&&r.status!=='removed')actions.push('<button class="smallbtn" data-status="paused" data-id="'+esc(r.id)+'">Pause</button>');
   if(r.status!=='active')actions.push('<button class="smallbtn" data-status="active" data-id="'+esc(r.id)+'">Restore / activate</button>');
   if(r.status==='active')actions.push('<button class="smallbtn" data-status="sold" data-id="'+esc(r.id)+'">Mark sold</button>');
-  return '<article class="listing-row"><img src="'+esc(r.photo_urls?.[0]||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"><div><div class="listing-title">'+esc(r.title)+'</div><div class="listing-meta">'+esc(r.category)+' · '+esc(r.city)+' · '+money(r.price_paise)+' · '+new Date(r.created_at).toLocaleDateString('en-IN')+'</div><span class="statuspill">'+esc(r.status)+'</span>'+(r.status==='active'?' · <a href="product.html?id='+encodeURIComponent(r.id)+'">View listing</a>':'')+'</div><div class="listing-actions">'+actions.join('')+'</div></article>';
+  return '<article class="listing-row"><img src="'+esc(r.photo_urls?.[0]||'')+'" alt=""><div><div class="listing-title">'+esc(r.title)+'</div><div class="listing-meta">'+esc(r.category)+' · '+esc(r.city)+' · '+money(r.price_paise)+' · '+new Date(r.created_at).toLocaleDateString('en-IN')+'</div><span class="statuspill">'+esc(r.status)+'</span>'+(r.status==='active'?' · <a href="product.html?id='+encodeURIComponent(r.id)+'">View listing</a>':'')+'</div><div class="listing-actions">'+actions.join('')+'</div></article>';
  }).join('');
  container.querySelectorAll('[data-remove]').forEach(btn=>btn.addEventListener('click',async()=>{
   const row=rows.find(x=>x.id===btn.dataset.remove);
@@ -47,7 +47,7 @@ async function loadReports(){
   banner('Report marked resolved.');await loadReports();
  }));
 }
-async function refresh(){banner('Refreshing live owner data…');await Promise.all([loadListings(),loadReports()]);banner('Owner access verified for '+OWNER_EMAIL+'.')}
+async function refresh(){banner('Refreshing live owner data…');await Promise.all([loadListings(),loadReports()]);}
 async function init(){
  if(!ready){banner('Backend not configured. Set up Supabase in assets/config.js.');return}
  const {data:{user}}=await db.auth.getUser();
