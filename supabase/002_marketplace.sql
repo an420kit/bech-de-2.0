@@ -142,7 +142,7 @@ grant execute on function public.start_conversation(uuid) to authenticated;
 
 create or replace function public.guard_conversation_participants()
 returns trigger language plpgsql set search_path=''
-as $
+as $$
 begin
  if new.id is distinct from old.id or new.listing_id is distinct from old.listing_id or
     new.buyer_id is distinct from old.buyer_id or new.seller_id is distinct from old.seller_id then
@@ -150,7 +150,7 @@ begin
  end if;
  return new;
 end;
-$;
+$$;
 drop trigger if exists conversations_guard_participants on public.conversations;
 create trigger conversations_guard_participants before update on public.conversations
 for each row execute function public.guard_conversation_participants();
@@ -194,14 +194,14 @@ create policy "Users delete own listing photos" on storage.objects
 -- Create a basic profile when an auth user signs up.
 create or replace function public.handle_new_auth_user()
 returns trigger language plpgsql security definer set search_path=''
-as $
+as $$
 begin
  insert into public.profiles(id,display_name)
  values(new.id,coalesce(nullif(new.raw_user_meta_data->>'display_name',''),split_part(coalesce(new.email,'member'),'@',1)))
  on conflict(id) do nothing;
  return new;
 end;
-$;
+$$;
 drop trigger if exists on_auth_user_created_bechde on auth.users;
 create trigger on_auth_user_created_bechde after insert on auth.users
 for each row execute function public.handle_new_auth_user();
@@ -222,9 +222,9 @@ create table if not exists public.admin_roles (
 alter table public.admin_roles enable row level security;
 create or replace function public.is_bechde_admin()
 returns boolean language sql stable security definer set search_path=''
-as $
+as $$
  select exists(select 1 from public.admin_roles where user_id=auth.uid());
-$;
+$$;
 revoke all on function public.is_bechde_admin() from public;
 grant execute on function public.is_bechde_admin() to authenticated;
 create policy "Admins can read report queue" on public.listing_reports
@@ -239,7 +239,7 @@ create policy "Admins can moderate listings" on public.listings
 -- Prevent client-side privilege escalation through owner-editable rows.
 create or replace function public.guard_profile_privileged_fields()
 returns trigger language plpgsql set search_path=''
-as $
+as $$
 begin
  if new.id <> old.id then raise exception 'Profile ID cannot change'; end if;
  if new.phone_verified is distinct from old.phone_verified and auth.uid() is not null then
@@ -247,14 +247,14 @@ begin
  end if;
  return new;
 end;
-$;
+$$;
 drop trigger if exists profiles_guard_privileged_fields on public.profiles;
 create trigger profiles_guard_privileged_fields before update on public.profiles
 for each row execute function public.guard_profile_privileged_fields();
 
 create or replace function public.guard_listing_privileged_fields()
 returns trigger language plpgsql set search_path=''
-as $
+as $$
 begin
  if auth.uid() is not null and old.seller_id=auth.uid() and not public.is_bechde_admin() then
    if new.seller_id is distinct from old.seller_id then raise exception 'Listing owner cannot change'; end if;
@@ -264,7 +264,7 @@ begin
  end if;
  return new;
 end;
-$;
+$$;
 drop trigger if exists listings_guard_privileged_fields on public.listings;
 create trigger listings_guard_privileged_fields before update on public.listings
 for each row execute function public.guard_listing_privileged_fields();
