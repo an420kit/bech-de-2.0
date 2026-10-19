@@ -8,7 +8,7 @@ googleBtn.addEventListener('click',async()=>{
  notice.className='notice';notice.style.display='block';
  if(!window.BECHDE_BACKEND_ENABLED){notice.classList.add('error');notice.textContent='Backend not configured yet. Configure Supabase in assets/config.js first.';return;}
  googleBtn.disabled=true;googleBtn.textContent='Connecting to Google…';
- const client=createClient(window.BECHDE_CONFIG.supabaseUrl,window.BECHDE_CONFIG.supabaseAnonKey);
+ const client=createClient(window.BECHDE_CONFIG.supabaseUrl,window.BECHDE_CONFIG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}});
  const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://an420kit.github.io/bech-de-2.0/account.html'}});
  if(error){notice.classList.add('error');notice.textContent=error.message;googleBtn.disabled=false;googleBtn.textContent='Continue with Google →';}
 });
