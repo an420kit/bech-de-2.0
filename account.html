@@ -27,6 +27,26 @@ if(ownListingIds.length){
   section.querySelectorAll('[data-offer]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;const {error}=await db.rpc('respond_to_offer',{p_offer_id:btn.dataset.offer,p_decision:btn.dataset.decision});if(error){btn.disabled=false;note.textContent=error.message;$('notice').hidden=false;return}run()}));
  }
 }
+if(ownListingIds.length){
+ const [incomingOffers,incomingBids]=await Promise.all([
+  db.from('price_offers').select('listing_id,buyer_id,amount_paise,status,created_at').in('listing_id',ownListingIds).in('status',['pending','accepted']).order('created_at',{ascending:false}).limit(100),
+  db.from('bids').select('listing_id,bidder_id,amount_paise,created_at').in('listing_id',ownListingIds).order('created_at',{ascending:false}).limit(100)
+ ]);
+ const interested=new Map();
+ (incomingOffers.data||[]).forEach(x=>{const k=x.listing_id+'|'+x.buyer_id;const old=interested.get(k)||{listing_id:x.listing_id,buyer_id:x.buyer_id,offer:null,bid:null};if(!old.offer)old.offer=x.amount_paise;interested.set(k,old)});
+ (incomingBids.data||[]).forEach(x=>{const k=x.listing_id+'|'+x.bidder_id;const old=interested.get(k)||{listing_id:x.listing_id,buyer_id:x.bidder_id,offer:null,bid:null};if(old.bid===null)old.bid=x.amount_paise;interested.set(k,old)});
+ const people=[...interested.values()];
+ if(people.length){
+  const ids=[...new Set(people.map(x=>x.buyer_id))];
+  const {data:profiles}=await db.from('public_seller_profiles').select('id,display_name').in('id',ids);
+  const names={};(profiles||[]).forEach(p=>names[p.id]=p.display_name);
+  const listingNames={};(lr.data||[]).forEach(l=>listingNames[l.id]=l.title);
+  const section=document.createElement('section');section.className='panel';section.style.marginTop='16px';
+  section.innerHTML='<h2>Interested buyers · you contact first</h2><p class="muted">Buyers appear here after making an offer or bid. Only you, as the seller, can start the chat.</p>'+people.map((x,i)=>'<div class="item"><div><strong>'+esc(names[x.buyer_id]||'Interested buyer')+'</strong><span class="muted">'+esc(listingNames[x.listing_id]||'Your listing')+' · '+(x.offer!==null?'Offer '+money(x.offer):'')+(x.offer!==null&&x.bid!==null?' · ':'')+(x.bid!==null?'Bid '+money(x.bid):'')+'</span><br><button class="btn lime" data-contact="'+i+'">Contact buyer →</button></div></div>').join('');
+  $('myConversations').closest('.panel').after(section);
+  section.querySelectorAll('[data-contact]').forEach(btn=>btn.addEventListener('click',async()=>{const x=people[Number(btn.dataset.contact)];btn.disabled=true;btn.textContent='Opening chat…';const {data,error}=await db.rpc('seller_contact_interested_buyer',{p_listing_id:x.listing_id,p_buyer_id:x.buyer_id});if(error){btn.disabled=false;btn.textContent='Contact buyer →';$('notice').hidden=false;$('notice').textContent=error.message;return}location.href='messages.html?id='+encodeURIComponent(data)}));
+ }
+}
 if(br.error)empty('myBids',br.error.message);else show('myBids',br.data.length?br.data.map(x=>'<div class="item"><div><strong>'+money(x.amount_paise)+' bid</strong><span class="muted">'+new Date(x.created_at).toLocaleString()+'</span><br><a href="product.html?id='+encodeURIComponent(x.listing_id)+'">Open product</a></div></div>').join(''):'<p class="muted">No bids yet.</p>');
 }
 $('signOut').addEventListener('click',async()=>{if(db)await db.auth.signOut();location.href='index.html'});run();
