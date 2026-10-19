@@ -46,3 +46,9 @@ end;
 $$;
 revoke all on function public.seller_contact_interested_buyer(uuid,uuid) from public;
 grant execute on function public.seller_contact_interested_buyer(uuid,uuid) to authenticated;
+
+-- Enforce seller-first contact at the database level too.
+-- Buyers can no longer create conversations directly; the seller-only
+-- SECURITY DEFINER function above creates a conversation after verified interest.
+drop policy if exists "Buyer starts conversation with active listing" on public.conversations;
+revoke all on function public.start_conversation(uuid) from public, authenticated;
