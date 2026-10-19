@@ -21,7 +21,7 @@ An India-first classifieds marketplace prototype. **The buyer and seller make th
 - `messages.html`: authenticated buyer–seller message thread.
 - `admin.html`: admin-role-gated report moderation.
 - `supabase/schema.sql` and `supabase/002_marketplace.sql`: initial database/RLS foundation.
-- `assets/config.js`: public Supabase config placeholder; replace before connecting the backend.
+- `assets/config.js`: public Supabase project URL and publishable key configured for project `osalvxajhkgisxisntww` (never add a secret/service-role key).
 - `assets/marketplace.js` and `assets/admin.js`: browser-side Supabase integrations.
 - `PRODUCTION_SETUP.md`: setup instructions and launch blockers.
 
