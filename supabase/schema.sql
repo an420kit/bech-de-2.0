@@ -157,7 +157,7 @@ returns public.price_offers
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 declare
   v_user uuid := auth.uid();
   v_offer public.price_offers%rowtype;
@@ -176,7 +176,7 @@ begin
   where id=p_offer_id returning * into v_offer;
   return v_offer;
 end;
-$;
+$$;
 revoke all on function public.respond_to_offer(uuid,text) from public;
 grant execute on function public.respond_to_offer(uuid,text) to authenticated;
 
