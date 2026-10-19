@@ -11,22 +11,31 @@ const categoryLabel={phones:'Phones',home:'Home & Office',laptops:'Laptops',elec
 function toast(msg){let el=$('toast');if(!el){el=document.createElement('div');el.id='toast';el.className='toast';document.body.appendChild(el)}el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
 async function user(){if(!db)return null;const {data}=await db.auth.getUser();return data.user||null}
 async function loadHome(){
- const box=$('products');if(!box||!db)return;
+ const box=$('products');if(!box)return;
+ const status=$('listingStatus');
+ const setStatus=(message,hidden=false)=>{if(status){status.textContent=message;status.hidden=hidden}};
+ const samples=()=>[...box.querySelectorAll('.product:not([data-live-listing])')];
+ const prepareSamples=()=>samples().forEach(card=>{
+   card.dataset.demoListing='true';
+   const image=card.querySelector('.product-image');
+   if(image&&!image.querySelector('.demo-badge')){const badge=document.createElement('span');badge.className='demo-badge';badge.textContent='DEMO PREVIEW';image.appendChild(badge)}
+   if(image&&!image.dataset.demoGuard){image.dataset.demoGuard='1';image.addEventListener('click',event=>{event.preventDefault();toast('Demo preview only — this is not a live seller listing.')})}
+   card.querySelectorAll('.product-actions button').forEach(button=>{button.onclick=event=>{event.preventDefault();toast('Demo preview only — seller contact is available on live listings.')};});
+ });
+ if(!db){setStatus('DEMO PREVIEW — Showing sample cards because live listings are not connected.');prepareSamples();return}
  const {data:items,error}=await db.from('listings').select('id,seller_id,title,price_paise,condition,category,city,area,photo_urls,accepts_offers,bidding_enabled,created_at,is_promoted').eq('status','active').order('is_promoted',{ascending:false}).order('created_at',{ascending:false}).limit(40);
- if(error){toast('Live listings could not load. Check Supabase policies.');return}
+ if(error){setStatus('DEMO PREVIEW — Live listings could not load. Sample cards remain visible while the connection is checked.');toast('Live listings could not load. Check Supabase policies.');prepareSamples();return}
  box.querySelectorAll('[data-live-listing]').forEach(el=>el.remove());
- box.querySelectorAll('.product:not([data-live-listing])').forEach(el=>el.remove());
- const section=$('fresh');
- let empty=$('liveEmpty');if(!empty){empty=document.createElement('p');empty.id='liveEmpty';empty.className='muted';box.parentElement.appendChild(empty)}
- empty.textContent=items?.length?'':'No listings yet. Be the first to list something.';
  const fullItems=items||[];
+ if(fullItems.length){samples().forEach(el=>el.remove());setStatus('',true)}
+ else {setStatus('DEMO PREVIEW — No active seller listings yet. These sample cards are for layout preview only.');prepareSamples()}
  let profiles={};const sellerIds=[...new Set(fullItems.map(x=>x.seller_id))];
  if(sellerIds.length){const {data}=await db.from('public_seller_profiles').select('id,display_name').in('id',sellerIds);profiles={};(data||[]).forEach(p=>profiles[p.id]=p)}
- (fullItems||[]).forEach(item=>{
+ fullItems.forEach(item=>{
    const img=item.photo_urls?.[0]||'';
    const card=document.createElement('article');card.className='product';card.dataset.liveListing='1';card.dataset.category=item.category;card.dataset.name=(item.title+' '+item.category+' '+item.city).toLowerCase();card.dataset.price=String(Number(item.price_paise)/100);card.dataset.condition=conditionLabel[item.condition]||'';card.dataset.listingId=item.id;
-   const flags=[item.accepts_offers?'OFFERS OPEN':'',item.bidding_enabled?'🔴 LIVE BIDDING':''].filter(Boolean).join(' · ');
-   card.innerHTML='<a href="product.html?id='+encodeURIComponent(item.id)+'" class="product-image">'+(img?'<img loading="lazy" src="'+escapeHtml(img)+'" alt="'+escapeHtml(item.title)+'">':'')+(item.condition?'<span class="condition">'+escapeHtml(conditionLabel[item.condition]||item.condition)+'</span>':'')+'</a><div class="product-info"><div class="product-cat">'+escapeHtml(categoryLabel[item.category]||item.category)+' · '+escapeHtml(item.area||item.city)+'</div><h3>'+escapeHtml(item.title)+'</h3><div class="price">'+money(item.price_paise)+'</div>'+(flags?'<div class="save">'+escapeHtml(flags)+'</div>':'')+'<div class="sellerline"><span class="avatar">'+escapeHtml((profiles[item.seller_id]?.display_name||'S').slice(0,1).toUpperCase())+'</span> '+escapeHtml(profiles[item.seller_id]?.display_name||'Bech De seller')+(item.is_promoted?'<span class="tag">PROMOTED</span>':'')+'</div><div class="product-actions"><a class="chat" style="text-align:center;padding:9px;border-radius:8px;flex:1;font-size:11px;font-weight:800" href="product.html?id='+encodeURIComponent(item.id)+'">View item</a></div></div>';
+   const flags=[item.accepts_offers?'OFFERS OPEN':'',item.bidding_enabled?'LIVE BIDDING':''].filter(Boolean).join(' · ');
+   card.innerHTML='<a href="product.html?id='+encodeURIComponent(item.id)+'" class="product-image">'+(img?'<img loading="lazy" src="'+escapeHtml(img)+'" alt="'+escapeHtml(item.title)+'">':'')+(item.condition?'<span class="condition">'+escapeHtml(conditionLabel[item.condition]||item.condition)+'</span>':'')+'</a><div class="product-info"><div class="product-cat">'+escapeHtml(categoryLabel[item.category]||item.category)+' · '+escapeHtml(item.area||item.city)+'</div><h3>'+escapeHtml(item.title)+'</h3><div class="price">'+money(item.price_paise)+'</div>'+(flags?'<div class="save">'+escapeHtml(flags)+'</div>':'')+'<div class="sellerline"><span class="avatar">'+escapeHtml((profiles[item.seller_id]?.display_name||'S').slice(0,1).toUpperCase())+'</span> '+escapeHtml(profiles[item.seller_id]?.display_name||'LOOP seller')+(item.is_promoted?'<span class="tag">PROMOTED</span>':'')+'</div><div class="product-actions"><a class="chat" style="text-align:center;padding:9px;border-radius:8px;flex:1;font-size:11px;font-weight:800" href="product.html?id='+encodeURIComponent(item.id)+'">View item</a></div></div>';
    box.appendChild(card);
  });
  if(window.applyFilters)window.applyFilters();
@@ -66,7 +75,7 @@ async function loadProduct(){
  const {data:item,error}=await db.from('listings').select('*').eq('id',id).eq('status','active').maybeSingle();
  if(error||!item){toast('This listing is unavailable or could not load.');return}
  const {data:profile}=await db.from('public_seller_profiles').select('display_name,city').eq('id',item.seller_id).maybeSingle();
- for(const [key,value] of Object.entries({title:item.title,price:money(item.price_paise),condition:conditionLabel[item.condition]||'Condition not specified',category:categoryLabel[item.category]||item.category,location:[item.area,item.city].filter(Boolean).join(', '),seller:profile?.display_name||'Bech De seller',crumbTitle:item.title,description:item.description||'Contact the seller for more details.'})){const el=$(key);if(el)el.textContent=value}
+ for(const [key,value] of Object.entries({title:item.title,price:money(item.price_paise),condition:conditionLabel[item.condition]||'Condition not specified',category:categoryLabel[item.category]||item.category,location:[item.area,item.city].filter(Boolean).join(', '),seller:profile?.display_name||'LOOP seller',crumbTitle:item.title,description:item.description||'Contact the seller for more details.'})){const el=$(key);if(el)el.textContent=value}
  const photo=$('photo');if(photo&&item.photo_urls?.length){photo.src=item.photo_urls[0];photo.alt=item.title}
  const avatar=$('avatar');if(avatar)avatar.textContent=(profile?.display_name||'S').slice(0,1).toUpperCase();
  const tag=$('condition');if(tag)tag.textContent=conditionLabel[item.condition]||'PRE-LOVED';
