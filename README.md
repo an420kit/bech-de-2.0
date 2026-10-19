@@ -12,13 +12,18 @@ An India-first classifieds marketplace prototype. **The buyer and seller make th
 - Fixed price is the default. Sellers can optionally accept price offers and/or enable bidding per individual listing; bidding must be attached to that product, not a site-wide mode. Auction start/end/reserve settings are listing-level.
 - Revenue: optional paid listing boosts and clearly labelled advertising; do not charge for ordinary direct negotiation by default.
 
-## Current frontend prototype
-- `index.html`: responsive marketplace home, search, category filters, sample listings, contact actions, real-photo upload preview and listing type selector.
-- `workflow.html`: visual end-to-end business workflow, owner responsibilities and revenue model.
-- `product.html`: product details and optional OpenBid demo.
-- `seller.html`: Seller Studio demo.
-- `admin.html`: Admin console demo.
-- `app.css`: shared supporting-page styles.
+## Frontend and backend integration status
+- `index.html`: responsive homepage with search, category/price/condition filters; loads active listings from Supabase when configured.
+- `seller.html`: photo upload and publish flow; optional offers/bidding settings per listing.
+- `product.html`: listing detail, offers, server-enforced bids, chat entry and report listing.
+- `auth.html`: passwordless email sign-in.
+- `account.html`: seller listings, buyer offers/bids, conversations and seller offer responses.
+- `messages.html`: authenticated buyer–seller message thread.
+- `admin.html`: admin-role-gated report moderation.
+- `supabase/schema.sql` and `supabase/002_marketplace.sql`: initial database/RLS foundation.
+- `assets/config.js`: public Supabase config placeholder; replace before connecting the backend.
+- `assets/marketplace.js` and `assets/admin.js`: browser-side Supabase integrations.
+- `PRODUCTION_SETUP.md`: setup instructions and launch blockers.
 
 ## Launch status — not production ready yet
 This repository is a frontend prototype, not a production marketplace. Listings and upload preview are local demo interactions; photos are not uploaded to a server. Chat, calling, login, persistent listings, paid promotion checkout, ad serving, moderation, and authoritative auction state are not connected to a backend. Offer and bid controls are UI demos only and must never be represented as real submitted offers/bids. Sample products and seller identities are illustrative.
