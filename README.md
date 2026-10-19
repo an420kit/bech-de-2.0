@@ -1,24 +1,33 @@
-# Bech De — Bid. Buy. Bech De.
+# Bech De 2.0 — Find it. Sell it. Bech De.
 
-India-first resale marketplace concept combining auctions, fixed-price listings, offers, fair-price guidance and trust signals.
+An India-first classifieds marketplace prototype. **The buyer and seller make the deal directly; Bech De is the discovery and connection platform.**
 
-## Current scope
-- Responsive storefront UI
-- Category navigation and product search
-- Auction cards with demo bid interactions
-- Sell-item listing preview
-- Fair-price guidance section
-- Mobile-friendly layout
+## Agreed business model
+- Seller creates their own listing and uploads genuine photos of the actual item. No AI-generated product photos.
+- Seller provides title, category, condition, asking price and location.
+- Buyer discovers listings, then contacts the seller through chat or call.
+- Buyer and seller negotiate and decide independently on inspection, price, payment and handover.
+- Bech De does not manage routine deals, collect the item, or arrange every delivery.
+- Revenue: clearly labelled advertising and paid/promoted listings.
+- OpenBid auctions are optional; regular classifieds/fixed-price listings are the default.
 
-## Important
-This is a frontend prototype. Bids and listing previews are demo-only; there is no production backend, real account system, payment processing, seller verification, or persistent auction data yet.
+## Current frontend prototype
+- `index.html`: responsive marketplace home, search, category filters, sample listings, contact actions, real-photo upload preview and listing type selector.
+- `workflow.html`: visual end-to-end business workflow, owner responsibilities and revenue model.
+- `product.html`: product details and optional OpenBid demo.
+- `seller.html`: Seller Studio demo.
+- `admin.html`: Admin console demo.
+- `app.css`: shared supporting-page styles.
 
-## Run locally
-Open `index.html` in a browser.
+## Important limitations
+This is not yet a production marketplace. Listings and upload preview are local demo interactions; photos are not uploaded to a server. Chat, calling, login, persistent listings, paid promotion checkout, ad serving, moderation, and auction state are not connected to a backend. Sample products and seller identities are illustrative.
 
-## Roadmap
-1. Product detail and full auction rules
-2. Backend/database and authentication
-3. Real-time bid handling and audit history
-4. Admin moderation and seller trust workflows
-5. Payment, disputes and shipping integrations
+## Run
+Open `index.html` in a browser, or enable GitHub Pages for a hosted static preview.
+
+## Next build stages
+1. Backend and database for accounts, listings, genuine image uploads and reporting.
+2. Authentication, chat and privacy-aware seller contact.
+3. Promoted listing checkout and ad provider integration.
+4. Moderation, spam controls, audit logs and admin tools.
+5. Optional real-time OpenBid service with server-enforced auction rules.
