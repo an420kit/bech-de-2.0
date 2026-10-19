@@ -79,7 +79,7 @@ create policy "Buyer starts conversation with active listing" on public.conversa
  for insert to authenticated with check (
    auth.uid()=buyer_id and exists (
      select 1 from public.listings l
-     where l.id=listing_id and l.seller_id=seller_id and l.seller_id<>auth.uid() and l.status='active'
+     where l.id=public.conversations.listing_id and l.seller_id=public.conversations.seller_id and l.seller_id<>auth.uid() and l.status='active'
    )
 );
 create policy "Participants can update conversation timestamp" on public.conversations
@@ -193,6 +193,29 @@ for each row execute function public.handle_new_auth_user();
 create or replace view public.public_seller_profiles with (security_invoker=false) as
 select id,display_name,city,created_at from public.profiles;
 grant select on public.public_seller_profiles to anon, authenticated;
+
+
+
+-- Explicit admin allow-list. Seed the owner's auth UUID manually after signup.
+create table if not exists public.admin_roles (
+ user_id uuid primary key references auth.users(id) on delete cascade,
+ role text not null check (role in ('owner','moderator')),
+ created_at timestamptz not null default now()
+);
+alter table public.admin_roles enable row level security;
+create or replace function public.is_bechde_admin()
+returns boolean language sql stable security definer set search_path=''
+as $
+ select exists(select 1 from public.admin_roles where user_id=auth.uid());
+$;
+revoke all on function public.is_bechde_admin() from public;
+grant execute on function public.is_bechde_admin() to authenticated;
+create policy "Admins can read report queue" on public.listing_reports
+ for select to authenticated using (public.is_bechde_admin());
+create policy "Admins can update report queue" on public.listing_reports
+ for update to authenticated using (public.is_bechde_admin()) with check (public.is_bechde_admin());
+create policy "Admins can moderate listings" on public.listings
+ for update to authenticated using (public.is_bechde_admin()) with check (public.is_bechde_admin());
 
 
 -- IMPORTANT: promotion_orders INSERT creates only a pending order.
