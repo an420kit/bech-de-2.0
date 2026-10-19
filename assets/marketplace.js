@@ -12,18 +12,15 @@ function toast(msg){let el=$('toast');if(!el){el=document.createElement('div');e
 async function user(){if(!db)return null;const {data}=await db.auth.getUser();return data.user||null}
 async function loadHome(){
  const box=$('products');if(!box||!db)return;
- const {data:items,error}=await db.from('listings').select('id,title,price_paise,condition,category,city,area,photo_urls,accepts_offers,bidding_enabled,created_at,is_promoted').eq('status','active').order('is_promoted',{ascending:false}).order('created_at',{ascending:false}).limit(40);
+ const {data:items,error}=await db.from('listings').select('id,seller_id,title,price_paise,condition,category,city,area,photo_urls,accepts_offers,bidding_enabled,created_at,is_promoted').eq('status','active').order('is_promoted',{ascending:false}).order('created_at',{ascending:false}).limit(40);
  if(error){toast('Live listings could not load. Check Supabase policies.');return}
  box.querySelectorAll('[data-live-listing]').forEach(el=>el.remove());
- box.querySelectorAll('.product').forEach(el=>el.style.display='none');
+ box.querySelectorAll('.product:not([data-live-listing])').forEach(el=>el.remove());
  const section=$('fresh');
  let empty=$('liveEmpty');if(!empty){empty=document.createElement('p');empty.id='liveEmpty';empty.className='muted';box.parentElement.appendChild(empty)}
  empty.textContent=items?.length?'':'No listings yet. Be the first to list something.';
- const ids=[...new Set((items||[]).map(x=>x.seller_id).filter(Boolean))];
- let profiles={};if(ids.length){const {data}=await db.from('public_seller_profiles').select('id,display_name').in('id',ids);(data||[]).forEach(p=>profiles[p.id]=p)}
- // Query seller names separately only after listing IDs are known.
- const {data:fullItems}=await db.from('listings').select('id,seller_id,title,price_paise,condition,category,city,area,photo_urls,accepts_offers,bidding_enabled,created_at,is_promoted').eq('status','active').order('is_promoted',{ascending:false}).order('created_at',{ascending:false}).limit(40);
- const sellerIds=[...new Set((fullItems||[]).map(x=>x.seller_id))];
+ const fullItems=items||[];
+ let profiles={};const sellerIds=[...new Set(fullItems.map(x=>x.seller_id))];
  if(sellerIds.length){const {data}=await db.from('public_seller_profiles').select('id,display_name').in('id',sellerIds);profiles={};(data||[]).forEach(p=>profiles[p.id]=p)}
  (fullItems||[]).forEach(item=>{
    const img=item.photo_urls?.[0]||'';
