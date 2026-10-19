@@ -1,4 +1,4 @@
--- Bech De marketplace completion migration.
+-- LOOP marketplace completion migration.
 -- Run after schema.sql in Supabase SQL Editor. Review before production.
 
 create table if not exists public.conversations (

@@ -10,6 +10,44 @@ const conditionLabel={like_new:'LIKE NEW',lightly_used:'LIGHTLY USED',regularly_
 const categoryLabel={phones:'Phones',home:'Home & Office',laptops:'Laptops',electronics:'Electronics',fashion:'Fashion',toys:'Toys & Hobbies',other:'Other'};
 function toast(msg){let el=$('toast');if(!el){el=document.createElement('div');el.id='toast';el.className='toast';document.body.appendChild(el)}el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
 async function user(){if(!db)return null;const {data}=await db.auth.getUser();return data.user||null}
+
+let loopLiveBanners=[];
+const bannerNow=()=>Date.now();
+function bannerIsInWindow(b){const now=bannerNow();return (!b.starts_at||new Date(b.starts_at).getTime()<=now)&&(!b.ends_at||new Date(b.ends_at).getTime()>now)}
+function renderOneLoopBanner(slotId,b){
+ const slot=$(slotId);if(!slot)return;
+ slot.replaceChildren();slot.hidden=!b;if(!b)return;
+ const wrap=document.createElement(b.target_url?'a':'section');wrap.className='loop-banner';
+ if(b.target_url){const target=String(b.target_url||'');if(/^https:\/\//i.test(target)||/^[a-z0-9_-]+\.html(?:[?#].*)?$/i.test(target)){wrap.href=target;if(/^https:\/\//i.test(target)){wrap.target='_blank';wrap.rel='noopener'}}else{wrap.href='#';wrap.addEventListener('click',e=>e.preventDefault())}}
+ const copy=document.createElement('div');copy.className='loop-banner-copy';
+ const label=document.createElement('span');label.className='loop-banner-kicker';label.textContent='Sponsored on LOOP';
+ const title=document.createElement('h3');title.textContent=b.title||'Discover something good';
+ const desc=document.createElement('p');desc.textContent=b.media_alt||'A special find picked for the LOOP community.';
+ copy.append(label,title,desc);
+ if(b.target_url){const cta=document.createElement('span');cta.className='loop-banner-cta';cta.textContent=(b.button_text||'Explore')+' ↗';copy.appendChild(cta)}
+ const media=document.createElement('div');media.className='loop-banner-media';
+ if(b.media_type==='video'){const v=document.createElement('video');v.src=b.media_url;v.muted=true;v.autoplay=true;v.loop=true;v.playsInline=true;v.preload='metadata';v.setAttribute('aria-label',b.media_alt||b.title||'Sponsored video');media.appendChild(v)}
+ else{const im=document.createElement('img');im.src=b.media_url;im.alt=b.media_alt||b.title||'Sponsored banner';im.loading='lazy';media.appendChild(im)}
+ const tag=document.createElement('span');tag.className='loop-banner-sponsored';tag.textContent='AD';wrap.append(copy,media,tag);slot.appendChild(wrap);
+}
+window.renderLoopBanners=function(category='all'){
+ const eligible=loopLiveBanners.filter(b=>b.active&&bannerIsInWindow(b));
+ const home=category==='all';
+ const first=eligible.find(b=>b.placement==='home_top');
+ const mid=eligible.find(b=>b.placement==='home_middle');
+ const cat=home?null:eligible.find(b=>b.placement==='category_banner'&&b.category===category);
+ renderOneLoopBanner('bannerHomeTop',home?first:null);
+ renderOneLoopBanner('bannerHomeMiddle',home?mid:null);
+ renderOneLoopBanner('bannerCategory',cat);
+};
+async function loadLoopBanners(){
+ if(!db)return;
+ const {data,error}=await db.from('ad_banners').select('id,title,placement,category,media_type,media_url,media_alt,button_text,target_url,active,display_order,starts_at,ends_at').eq('active',true).order('display_order',{ascending:true}).limit(100);
+ if(error){loopLiveBanners=[];return}
+ loopLiveBanners=data||[];
+ window.renderLoopBanners('all');
+}
+
 async function loadHome(){
  const box=$('products');if(!box)return;
  const status=$('listingStatus');
@@ -118,7 +156,7 @@ async function loadProduct(){
 async function init(){
  if(!ready){document.querySelectorAll('[data-needs-backend]').forEach(e=>e.hidden=false);return}
  if($('sellform')){$('sellform').addEventListener('submit',e=>{e.preventDefault();e.stopImmediatePropagation();submitSellerForm()})}
- if($('products'))await loadHome();
+ if($('products')){await loadLoopBanners();await loadHome();}
  if($('crumbTitle')&&new URLSearchParams(location.search).has('id'))await loadProduct();
 }
 init();

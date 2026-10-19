@@ -1,4 +1,4 @@
--- Bech De production foundation for Supabase/Postgres.
+-- LOOP marketplace foundation for Supabase/Postgres.
 -- Apply only in a new Supabase project after reviewing the launch checklist.
 create extension if not exists pgcrypto;
 

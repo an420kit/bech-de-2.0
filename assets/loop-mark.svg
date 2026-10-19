@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+<title id="title">LOOP circular arrow mark</title>
+<defs><linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8f34a"/><stop offset="1" stop-color="#79b83e"/></linearGradient></defs>
+<path d="M47.8 17.2A22 22 0 0 0 11 31.8" fill="none" stroke="#173c2a" stroke-width="5.8" stroke-linecap="round"/>
+<path d="M5.8 21.5 10.9 33l10.4-7.2Z" fill="#173c2a"/>
+<path d="M16.2 46.8A22 22 0 0 0 53 32.2" fill="none" stroke="url(#leaf)" stroke-width="5.8" stroke-linecap="round"/>
+<path d="M58.2 42.5 53.1 31l-10.4 7.2Z" fill="#79b83e"/>
+<path d="M20.5 37.7c.4-8 7.2-14 15.2-14.1-.7 8.3-7.1 14.3-15.2 14.1Z" fill="#173c2a"/>
+<path d="M28.5 43.8c.5-7.5 6.9-13.2 14.4-13.1-.5 7.7-6.7 13.4-14.4 13.1Z" fill="url(#leaf)"/>
+</svg>

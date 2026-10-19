@@ -1,4 +1,4 @@
-name: Deploy Bech De to GitHub Pages
+name: Deploy LOOP to GitHub Pages
 
 on:
   push:

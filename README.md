@@ -1,13 +1,13 @@
-# Bech De 2.0 — Find it. Sell it. Bech De.
+# LOOP — Good things go around.
 
-An India-first classifieds marketplace prototype. **The buyer and seller make the deal directly; Bech De is the discovery and connection platform.**
+An India-first classifieds marketplace prototype. **The buyer and seller make the deal directly; LOOP is the discovery and connection platform.**
 
 ## Agreed business model
 - Seller creates their own listing and uploads genuine photos of the actual item. No AI-generated product photos.
 - Seller provides title, category, condition, asking price and location.
 - Buyer discovers listings, then contacts the seller through chat or call.
 - Buyer and seller negotiate and decide independently on inspection, price, payment and handover.
-- Bech De does not manage routine deals, collect the item, or arrange every delivery.
+- LOOP does not manage routine deals, collect the item, or arrange every delivery.
 - Revenue: clearly labelled advertising and paid/promoted listings.
 - Fixed price is the default. Sellers can optionally accept price offers and/or enable bidding per individual listing; bidding must be attached to that product, not a site-wide mode. Auction start/end/reserve settings are listing-level.
 - Revenue: optional paid listing boosts and clearly labelled advertising; do not charge for ordinary direct negotiation by default.
@@ -26,7 +26,7 @@ An India-first classifieds marketplace prototype. **The buyer and seller make th
 - `PRODUCTION_SETUP.md`: setup instructions and launch blockers.
 
 ## Launch status — not production ready yet
-This repository is a frontend prototype, not a production marketplace. Listings and upload preview are local demo interactions; photos are not uploaded to a server. Chat, calling, login, persistent listings, paid promotion checkout, ad serving, moderation, and authoritative auction state are not connected to a backend. Offer and bid controls are UI demos only and must never be represented as real submitted offers/bids. Sample products and seller identities are illustrative.
+LOOP is an evolving marketplace build. Seller login, real photo uploads, persistent listings and seller-first chat are wired to Supabase and depend on the current SQL migrations, provider setup and row-level security policies being applied. Homepage sample products and sample review cards are design previews, not live offers or verified customer reviews. Banner Studio requires `supabase/005_loop_banner_studio.sql`. Paid promotion checkout, signed payment webhooks, ad-serving monetization and verified transaction reviews are not yet production-complete.
 
 ## Run
 Open `index.html` in a browser, or enable GitHub Pages for a hosted static preview.

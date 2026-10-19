@@ -9,7 +9,7 @@ stable
 security definer
 set search_path = ''
 as $$
-  select lower(coalesce(auth.jwt() ->> 'email', '')) = 'ankitmishra489@gmail.com';
+  select lower(coalesce(auth.jwt() ->> 'email', '')) = 'ankitmisra489@gmail.com';
 $$;
 
 revoke all on function public.is_bechde_admin() from public;
