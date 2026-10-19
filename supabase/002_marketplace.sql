@@ -95,6 +95,7 @@ create policy "Participants can send messages" on public.messages
    sender_id=auth.uid() and exists(
      select 1 from public.conversations c
      where c.id=conversation_id and (c.buyer_id=auth.uid() or c.seller_id=auth.uid())
+       and not exists(select 1 from public.user_blocks b where (b.blocker_id=c.buyer_id and b.blocked_id=c.seller_id) or (b.blocker_id=c.seller_id and b.blocked_id=c.buyer_id))
    )
 );
 
@@ -137,6 +138,22 @@ end;
 $$;
 revoke all on function public.start_conversation(uuid) from public;
 grant execute on function public.start_conversation(uuid) to authenticated;
+
+
+create or replace function public.guard_conversation_participants()
+returns trigger language plpgsql set search_path=''
+as $
+begin
+ if new.id is distinct from old.id or new.listing_id is distinct from old.listing_id or
+    new.buyer_id is distinct from old.buyer_id or new.seller_id is distinct from old.seller_id then
+   raise exception 'Conversation participants and listing cannot change';
+ end if;
+ return new;
+end;
+$;
+drop trigger if exists conversations_guard_participants on public.conversations;
+create trigger conversations_guard_participants before update on public.conversations
+for each row execute function public.guard_conversation_participants();
 
 -- Automatically update conversation timestamp when a message is sent.
 create or replace function public.bump_conversation_timestamp()
@@ -225,7 +242,7 @@ returns trigger language plpgsql set search_path=''
 as $
 begin
  if new.id <> old.id then raise exception 'Profile ID cannot change'; end if;
- if new.phone_verified is distinct from old.phone_verified then
+ if new.phone_verified is distinct from old.phone_verified and auth.uid() is not null then
    raise exception 'Phone verification can only be changed by a trusted verification process';
  end if;
  return new;
