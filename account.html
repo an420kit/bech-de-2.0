@@ -18,6 +18,15 @@ db.from('bids').select('id,listing_id,amount_paise,created_at').eq('bidder_id',u
 if(lr.error)empty('myListings',lr.error.message);else show('myListings',lr.data.length?lr.data.map(x=>'<div class="item">'+(x.photo_urls?.[0]?'<img src="'+esc(x.photo_urls[0])+'" alt="">':'')+'<div><strong>'+esc(x.title)+'</strong><span class="muted">'+money(x.price_paise)+' · '+esc(x.status)+'</span><br><a href="product.html?id='+encodeURIComponent(x.id)+'">View listing</a></div></div>').join(''):'<p class="muted">No listings yet.</p>');
 if(cr.error)empty('myConversations',cr.error.message);else show('myConversations',cr.data.length?cr.data.map(x=>'<div class="item"><div><strong>Conversation about a listing</strong><span class="muted">'+new Date(x.last_message_at).toLocaleString()+'</span><br><a href="messages.html?id='+encodeURIComponent(x.id)+'">Open chat</a></div></div>').join(''):'<p class="muted">No conversations yet.</p>');
 if(or.error)empty('myOffers',or.error.message);else show('myOffers',or.data.length?or.data.map(x=>'<div class="item"><div><strong>'+money(x.amount_paise)+' offer</strong><span class="muted">'+esc(x.status)+'</span><br><a href="product.html?id='+encodeURIComponent(x.listing_id)+'">Open product</a></div></div>').join(''):'<p class="muted">No offers yet.</p>');
+const ownListingIds=(lr.data||[]).map(x=>x.id);
+if(ownListingIds.length){
+ const {data:incoming,error:incomingError}=await db.from('price_offers').select('id,listing_id,amount_paise,status,created_at').in('listing_id',ownListingIds).order('created_at',{ascending:false}).limit(50);
+ if(!incomingError&&incoming?.length){
+  const section=document.createElement('section');section.innerHTML='<h3 style="font-size:13px;margin:16px 0 4px">Offers on my listings</h3><div>'+incoming.map(x=>'<div class="item"><div><strong>'+money(x.amount_paise)+' incoming offer</strong><span class="muted">'+esc(x.status)+'</span><br><a href="product.html?id='+encodeURIComponent(x.listing_id)+'">View product</a> '+(x.status==='pending'?'<button class="btn lime" data-offer="'+esc(x.id)+'" data-decision="accepted">Accept</button> <button class="btn outline" data-offer="'+esc(x.id)+'" data-decision="declined">Decline</button>':'')+'</div></div>').join('')+'</div>';
+  $('myOffers').appendChild(section);
+  section.querySelectorAll('[data-offer]').forEach(btn=>btn.addEventListener('click',async()=>{btn.disabled=true;const {error}=await db.rpc('respond_to_offer',{p_offer_id:btn.dataset.offer,p_decision:btn.dataset.decision});if(error){btn.disabled=false;note.textContent=error.message;$('notice').hidden=false;return}run()}));
+ }
+}
 if(br.error)empty('myBids',br.error.message);else show('myBids',br.data.length?br.data.map(x=>'<div class="item"><div><strong>'+money(x.amount_paise)+' bid</strong><span class="muted">'+new Date(x.created_at).toLocaleString()+'</span><br><a href="product.html?id='+encodeURIComponent(x.listing_id)+'">Open product</a></div></div>').join(''):'<p class="muted">No bids yet.</p>');
 }
 $('signOut').addEventListener('click',async()=>{if(db)await db.auth.signOut();location.href='index.html'});run();
