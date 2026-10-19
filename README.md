@@ -9,7 +9,8 @@ An India-first classifieds marketplace prototype. **The buyer and seller make th
 - Buyer and seller negotiate and decide independently on inspection, price, payment and handover.
 - Bech De does not manage routine deals, collect the item, or arrange every delivery.
 - Revenue: clearly labelled advertising and paid/promoted listings.
-- OpenBid auctions are optional; regular classifieds/fixed-price listings are the default.
+- Fixed price is the default. Sellers can optionally accept price offers and/or enable bidding per individual listing; bidding must be attached to that product, not a site-wide mode. Auction start/end/reserve settings are listing-level.
+- Revenue: optional paid listing boosts and clearly labelled advertising; do not charge for ordinary direct negotiation by default.
 
 ## Current frontend prototype
 - `index.html`: responsive marketplace home, search, category filters, sample listings, contact actions, real-photo upload preview and listing type selector.
@@ -19,15 +20,27 @@ An India-first classifieds marketplace prototype. **The buyer and seller make th
 - `admin.html`: Admin console demo.
 - `app.css`: shared supporting-page styles.
 
-## Important limitations
-This is not yet a production marketplace. Listings and upload preview are local demo interactions; photos are not uploaded to a server. Chat, calling, login, persistent listings, paid promotion checkout, ad serving, moderation, and auction state are not connected to a backend. Sample products and seller identities are illustrative.
+## Launch status — not production ready yet
+This repository is a frontend prototype, not a production marketplace. Listings and upload preview are local demo interactions; photos are not uploaded to a server. Chat, calling, login, persistent listings, paid promotion checkout, ad serving, moderation, and authoritative auction state are not connected to a backend. Offer and bid controls are UI demos only and must never be represented as real submitted offers/bids. Sample products and seller identities are illustrative.
 
 ## Run
 Open `index.html` in a browser, or enable GitHub Pages for a hosted static preview.
 
-## Next build stages
-1. Backend and database for accounts, listings, genuine image uploads and reporting.
-2. Authentication, chat and privacy-aware seller contact.
-3. Promoted listing checkout and ad provider integration.
-4. Moderation, spam controls, audit logs and admin tools.
-5. Optional real-time OpenBid service with server-enforced auction rules.
+## Required before public launch
+1. **Backend/database:** persistent accounts, listings, categories, location, image storage, listing status and deletion.
+2. **Authentication and access control:** verified email/phone, secure sessions, rate limits, server-side admin authorization and recovery flows.
+3. **Contact:** real in-app chat, user-initiated call/contact reveal, blocking and reporting.
+4. **Offers and product-level bidding:** seller controls per listing; server-side validation, bid history, atomic highest-bid updates, close time enforcement, anti-sniping policy, reserve-price handling, seller/buyer notifications, cancellation/dispute rules and audit trail. Do not run real auctions with browser-only state.
+5. **Revenue:** paid boost checkout, payment provider/webhook verification, receipts/refunds/tax handling and clearly labelled ad inventory. Do not fake paid status in the browser.
+6. **Trust and safety:** restricted-item policy, report queue, spam/abuse handling, image moderation process, safe-meetup advice and account suspension workflow.
+7. **Legal/privacy:** Terms of Use, Privacy Policy, listing rules, auction rules, contact-data consent, data deletion process and India-specific legal/tax review.
+8. **Quality/reliability:** responsive and accessibility checks, broken-link and form validation tests, security review, backups, error monitoring, SEO/social metadata and production domain/HTTPS.
+9. **Operations:** support contact, incident process, owner dashboard connected to real records, automated alerts for serious reports only.
+
+## Current working demo behavior
+- Homepage search/category filtering and price/condition sorting work on illustrative sample listings.
+- Seller Studio previews an item and optional offer/bidding settings locally; nothing is published.
+- Product page can demonstrate offer and bid input locally when opened with demo query parameters; no real offer or bid is transmitted.
+
+## Run
+Open `index.html` in a browser, or enable GitHub Pages for a hosted static preview. GitHub Pages alone cannot provide real accounts, private chat, secure payments, or authoritative auctions.
