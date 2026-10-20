@@ -100,4 +100,9 @@ function bootProduct(){
  let cat=(new URLSearchParams(location.search).get('id')||'phone').toLowerCase();if(cat.includes('tv')||cat.includes('ipod'))cat='electronics';else if(cat.includes('desk')||cat.includes('buoy'))cat='home';else if(cat.includes('laptop'))cat='laptops';else if(cat.includes('shoe')||cat.includes('fashion'))cat='fashion';else cat='phones';
  try{const viewer=makeScene(stage,cat,true);makeControls(stage,viewer,true);const note=document.createElement('p');note.className='loop3d-product-note';note.textContent='Drag to rotate · Scroll or pinch-friendly controls · Rendered in real-time 3D. Seller photos remain below for reference.';stage.after(note)}catch(e){stage.remove()}
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{bootHero();bootProduct()});else{bootHero();bootProduct()}
+// 3D is opt-in and limited to product detail; never inject into homepage/category listings.
+const preview3d=new URLSearchParams(location.search).get('3d')==='1';
+if(preview3d){
+ const start=()=>{bootProduct();const b=document.getElementById('try3d');if(b){b.textContent='↻ 3D preview enabled';b.onclick=()=>{const u=new URL(location.href);u.searchParams.delete('3d');location.href=u.href}}const n=document.getElementById('threeNote');if(n)n.textContent='Experimental category-based 3D illustration — not a scan or verified representation of this exact item.'};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+}
