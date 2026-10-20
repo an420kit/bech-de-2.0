@@ -1,0 +1,21 @@
+/* LOOP 3D scene */
+.loop3d-stage{position:absolute!important;inset:0;z-index:1;min-height:100%;pointer-events:auto}
+.loop3d-stage canvas{display:block;width:100%;height:100%;outline:0;touch-action:pan-y}
+.hero-visual{isolation:isolate}
+.hero-visual>img{position:relative;z-index:0}
+.hero-visual .loop3d-stage{z-index:1}
+.loop3d-hint{position:absolute;z-index:3;left:18px;top:18px;padding:7px 10px;border:1px solid #ffffff26;border-radius:3px;background:#070b11a8;color:#dbe8f5;font-size:9px;font-weight:850;letter-spacing:1.3px;backdrop-filter:blur(12px);pointer-events:none}
+.loop3d-hint i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#c9fb42;margin-right:7px;box-shadow:0 0 10px #c9fb42}
+.loop3d-controls{position:absolute;z-index:4;right:18px;bottom:18px;display:flex;gap:7px}
+.loop3d-controls button{border:1px solid #ffffff30;background:#080d15d9;color:#f4f7fb;border-radius:4px;padding:9px 11px;font-size:10px;font-weight:850;backdrop-filter:blur(12px);cursor:pointer}
+.loop3d-controls button[aria-pressed="true"],.loop3d-controls button:hover{background:#c9fb42;color:#10150b;border-color:#c9fb42}
+.loop3d-live{position:absolute;z-index:3;right:20px;top:52px;color:#a8b8c9;font-size:9px;letter-spacing:1.6px;writing-mode:vertical-rl;pointer-events:none}
+.loop3d-fallback{display:none}
+.loop3d-product{position:relative;min-height:420px;background:radial-gradient(ellipse at 50% 48%,#16364a,#0a111b 65%,#080b11);border-radius:10px;overflow:hidden;border:1px solid #273340}
+.loop3d-product canvas{display:block;width:100%;height:420px;touch-action:pan-y}
+.loop3d-product .loop3d-hint{left:14px;top:14px}
+.loop3d-product .loop3d-controls{right:12px;bottom:12px}
+.loop3d-product-note{font-size:11px;color:#8793a3;margin:9px 2px 0}
+.loop3d-product .loop3d-live{right:12px;top:50px}
+@media(max-width:800px){.hero-visual .loop3d-stage{inset:0}.loop3d-hint{left:12px;top:12px}.loop3d-live{right:10px;top:45px}.loop3d-controls{right:10px;bottom:10px}.loop3d-controls button{padding:8px 9px}.loop3d-product,.loop3d-product canvas{min-height:310px;height:310px}}
+@media(prefers-reduced-motion:reduce){.loop3d-stage canvas{animation:none}}
