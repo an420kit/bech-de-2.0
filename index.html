@@ -104,6 +104,136 @@ body{background:#fff;color:#171717;font-family:Inter,Arial,sans-serif}
 .product h3{font-weight:800}
 .product-info{padding:15px}
 @media(max-width:700px){.loop-banner{grid-template-columns:1fr}.loop-banner-copy{padding:21px 20px;min-height:140px}.loop-banner-media{min-height:150px;max-height:190px;grid-row:1}.loop-banner-media img,.loop-banner-media video{min-height:150px;max-height:190px}.loop-banner h3{font-size:25px}.banner-slot{margin:12px auto 17px}}
+
+/* CINEMATIC LOOP — Sony-inspired premium dark editorial direction; marketplace behavior preserved */
+:root{--navy:#05070b;--navy2:#0b111b;--lime:#c9fb42;--green:#8fb84c;--ink:#f4f6fa;--muted:#a1a8b5;--line:#252b35;--bg:#07090d;--paper:#10141c}
+html{scroll-behavior:smooth;scroll-padding-top:145px}
+body.loop-home{background:#07090d;color:#f4f6fa;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Arial,sans-serif}
+.topline{background:#05070a;color:#9fa9b7;border-bottom:1px solid #1b222c;letter-spacing:1.7px;text-transform:uppercase;font-size:9px;padding:10px}
+.header{background:#080b10ed;color:#f5f7fb;backdrop-filter:blur(18px);box-shadow:0 1px 0 #ffffff12}
+.headrow{min-height:76px}
+.brand,.header .brand{color:#f5f7fb}
+.brand{letter-spacing:-2px}
+.loopmark{background:var(--lime);color:#07100b;box-shadow:0 0 24px #c9fb4226}
+.brand>span:last-child{color:var(--lime)}
+.search{background:#ffffff08;border-color:#ffffff20;border-radius:5px}
+.search input{color:#fff}.search input::placeholder{color:#818b9a}
+.location{color:#b8c0cd}
+.btn{border-radius:4px;transition:transform .2s,background .2s}
+.btn:hover,.loop-banner-cta:hover{transform:translateY(-2px)}
+.lime{background:var(--lime);color:#09100b;box-shadow:0 7px 24px #c9fb4215}
+.light{background:#ffffff0a;color:#f7f8fb;border-color:#ffffff26}
+.ghost{color:#f7f8fb;border-color:#ffffff42}
+.nav{color:#929baa;letter-spacing:.15px}
+.nav a:hover{color:var(--lime)}
+.categorybar{background:#080b10f2;color:#f5f7fb;border-color:#ffffff12;box-shadow:0 8px 30px #0005;backdrop-filter:blur(15px)}
+.category{color:#a5adba;border-color:transparent}
+.category.active{color:var(--lime);border-color:var(--lime)}
+.category:hover{color:#fff}
+.hero{position:relative;isolation:isolate;min-height:480px;margin:26px auto 24px;border:1px solid #ffffff13;border-radius:8px;background:radial-gradient(ellipse at 75% 48%,#15364c 0%,#0b1725 29%,transparent 57%),linear-gradient(115deg,#05070b 0%,#090d15 58%,#101d2a 100%);color:#f5f7fb;overflow:hidden;box-shadow:0 30px 100px #0005}
+.hero:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(90deg,#05070b 0%,#05070bfa 31%,#05070b70 62%,#05070b12 100%),repeating-linear-gradient(0deg,transparent 0 59px,#ffffff08 60px),repeating-linear-gradient(90deg,transparent 0 59px,#ffffff08 60px);mask-image:linear-gradient(90deg,#000 0%,#000 70%,transparent 100%)}
+.hero:after{content:"LOOP / SECOND LIFE MARKETPLACE";position:absolute;right:18px;top:17px;color:#a8b4c4;font-size:9px;letter-spacing:2px;font-weight:800}
+.hero-copy{padding:58px 44px;position:relative;z-index:2}
+.eyebrow{color:var(--lime);font-size:10px;letter-spacing:2.2px}
+.dot{background:var(--lime);box-shadow:0 0 15px #c9fb4280}
+.hero h1{font-size:clamp(54px,7.2vw,94px);line-height:.91;letter-spacing:-5.8px;margin:24px 0 18px;font-weight:950;text-wrap:balance}
+.hero h1 span{color:var(--lime);text-shadow:0 0 45px #c9fb4217}
+.hero p{color:#aeb8c6;font-size:14px;line-height:1.8;max-width:400px}
+.hero .actions{margin-top:27px}
+.hero-visual{min-height:430px;padding:20px;position:relative;overflow:hidden}
+.hero-visual:before{content:"";position:absolute;inset:7% 4% 7% 0;background:radial-gradient(ellipse at center,#42a4e72c,transparent 62%);pointer-events:none}
+.hero-visual img{height:100%;min-height:390px;max-height:430px;object-fit:cover;border-radius:4px;filter:saturate(.72) contrast(1.12);opacity:.82;mask-image:linear-gradient(90deg,transparent 0%,#000 22%,#000 100%);animation:loopDrift 18s ease-in-out infinite alternate}
+.float-card{left:3px;bottom:37px;background:#0c121be8;color:#f4f6fa;border:1px solid #ffffff25;border-radius:4px;box-shadow:0 12px 45px #0006;backdrop-filter:blur(12px)}
+.float-card small{color:var(--lime)}
+@keyframes loopDrift{from{transform:scale(1.02) translateY(0)}to{transform:scale(1.08) translateY(-7px)}}
+.trustrow{background:#0d1118;border-color:#252c37;border-radius:5px}
+.trust{border-color:#252c37}
+.trust .icon{background:#c9fb4212;color:var(--lime);border:1px solid #c9fb4228;border-radius:4px}
+.trust strong{color:#eef1f6}.trust small{color:#8f99a8}
+.section{margin:48px auto}
+.sectionhead h2{color:#f5f7fb;font-size:clamp(25px,3vw,34px);letter-spacing:-1.3px}
+.sectionhead p{color:#929baa}
+.seeall{color:var(--lime)}
+.filterbtn,.sortselect{background:#0e131b;border-color:#29313d;color:#edf0f5;border-radius:4px}
+.filterpanel{background:#0d1118;border-color:#29313d;border-radius:5px}
+.filtergrid label{color:#cbd2dd}
+.filtergrid input,.filtergrid select{background:#080b10;color:#f4f6fa;border-color:#303846}
+.filteractions .clearfilters{background:#202733;color:#eef1f6}
+.applyfilters{background:var(--lime)}
+.listing-status{background:#111722;color:#aab5c4;border:1px solid #242e3b}
+.crazy{gap:14px}
+.product{background:#0d1118;border-color:#252c37;border-radius:5px;transition:transform .3s,border-color .3s,box-shadow .3s}
+.product:hover{transform:translateY(-5px);border-color:#5c6a7c;box-shadow:0 20px 50px #0007}
+.product-image{background:#141b25}
+.product-image img{filter:saturate(.86);transition:transform .5s}
+.product:hover .product-image img{transform:scale(1.035)}
+.condition{background:#d9ff74;color:#11190c;border-radius:3px}
+.heart{background:#0b1018;color:#fff;border-color:#ffffff20}
+.product-info{padding:15px}
+.product-cat{color:#9aa5b4;letter-spacing:.5px}
+.product h3{color:#f1f3f8}
+.price{color:#f7f8fb}
+.oldprice{color:#7e8999}
+.save{color:var(--lime)}
+.sellerline{color:#a0a9b7}
+.avatar{background:#1c2b1b;color:var(--lime)}
+.chat{background:var(--lime);color:#10150c}
+.call{background:#111721;border-color:#303846;color:#edf0f6}
+.categorygrid .categorytile{border:1px solid #ffffff16;box-shadow:0 12px 35px #0003}
+.categorytile:after{background:linear-gradient(transparent,#05070bf5)}
+.tiletext small{color:var(--lime);letter-spacing:1px}
+.tiletext strong{color:#fff}
+.step{background:#0d1118;border-color:#252c37;border-radius:5px}
+.step b{background:#c9fb4215;color:var(--lime);border:1px solid #c9fb4233}
+.step h3{color:#f4f6fa}.step p{color:#9ba5b4}
+.reviewcard{background:#0d1118;border-color:#252c37;border-radius:5px}
+.reviewcard p{color:#b1bac7}.reviewby{color:#f1f4f8}.reviewby small{color:#909aaa}
+.reviewavatar{background:#1b2a19;color:var(--lime)}
+.stars{color:var(--lime)}
+.demo-note{background:#111722;color:#a5afbd;border:1px solid #252c37}
+.sellbanner{background:radial-gradient(ellipse at 95% 0%,#c9fb4224,transparent 40%),linear-gradient(110deg,#121a20,#111711);border:1px solid #35432c;border-radius:5px;color:#f4f6fa;padding:34px}
+.sellbanner h2{font-size:clamp(24px,3vw,36px);letter-spacing:-1.4px}
+.sellbanner p{color:#aab5c1;line-height:1.7}
+.darkbtn{background:var(--lime);color:#0c1208}
+.supportbar{background:#0d1118;border-color:#252c37;color:#f1f4f8}
+.supportbar small{color:#9ba5b4}
+.supportlinks a{border-color:#333e4d;color:#eef1f5}
+.supportlinks a.primary{background:var(--lime);border-color:var(--lime);color:#10150b}
+.footer{background:#05070a;border-color:#252b35;color:#8f99a8}
+.footer .brand{color:#fff}
+.toast{background:#efffc1;color:#10150b;border:1px solid #d3fa75;box-shadow:0 12px 40px #0008}
+.banner-slot{filter:brightness(.94)}
+.loop-banner{background:#101820;border-color:#293543;color:#f5f7fb}
+.loop-banner-copy p{color:#aab5c2}.loop-banner-kicker{color:var(--lime)}
+.loop-banner-cta{background:var(--lime);color:#0d1309;border-radius:4px}
+.loop-banner-sponsored{background:#090e15;color:#c9fb42;border-color:#303b49}
+@media(max-width:800px){
+ .hero{min-height:0;margin-top:16px}
+ .hero:before{background:linear-gradient(180deg,#05070b 0%,#05070be8 40%,#05070b45 100%),repeating-linear-gradient(0deg,transparent 0 49px,#ffffff07 50px),repeating-linear-gradient(90deg,transparent 0 49px,#ffffff07 50px)}
+ .hero-copy{padding:38px 25px 12px}
+ .hero h1{font-size:clamp(53px,11vw,76px);letter-spacing:-3.8px}
+ .hero-visual{min-height:260px;padding:12px}
+ .hero-visual img{min-height:235px;height:235px;mask-image:linear-gradient(180deg,#000 0%,#000 60%,transparent 100%)}
+ .float-card{left:19px;bottom:26px}
+ .trustrow{margin-bottom:28px}
+}
+@media(max-width:520px){
+ .topline{font-size:8px;letter-spacing:1.2px}
+ .hero{border-radius:5px}
+ .hero-copy{padding:32px 19px 7px}
+ .hero h1{font-size:53px;letter-spacing:-3.4px}
+ .hero p{font-size:13px}
+ .hero:after{font-size:7px;right:10px;top:10px}
+ .hero-visual{min-height:220px}
+ .hero-visual img{min-height:200px;height:200px}
+ .section{margin:37px auto}
+ .sectionhead h2{font-size:25px}
+ .crazy{grid-auto-columns:78%;gap:10px}
+ .product-image{height:215px}
+ .sellbanner{padding:23px}
+ .trust{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 </style><link rel="stylesheet" href="assets/loop-brand.css"><link rel="icon" type="image/svg+xml" href="assets/loop-mark.svg"></head><body class="loop-home">
 <div class="topline">A BETTER WAY TO GIVE GOOD THINGS ANOTHER LIFE</div>
 <header class="header"><div class="wrap"><div class="headrow"><a class="brand" href="index.html"><span class="loopmark" aria-hidden="true">↻</span>loop<span>.</span></a><label class="search">⌕ <input id="search" placeholder="Search phones, furniture, bikes…"></label><div class="location">⌖ <span id="locLabel">Ambala, India</span>⌄</div><a class="btn light signin" href="auth.html">Sign in</a><a class="btn lime" href="seller.html">＋ Sell</a><button class="mobile-menu" onclick="toast('Menu: Browse · Sell · Help · My account')" aria-label="Open menu">☰</button></div><nav class="nav"><a href="#fresh">Fresh finds</a><a href="#categories">Categories</a><a href="#how">How it works</a><a href="#community">Reviews</a><a href="workflow.html">About LOOP</a><a href="account.html">My account</a><a href="admin.html">Owner</a></nav></div></header>
